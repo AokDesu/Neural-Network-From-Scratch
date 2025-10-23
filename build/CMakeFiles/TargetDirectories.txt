@@ -1,0 +1,3 @@
+/home/symphony/Documents/Linear-Algebra/Gradient_Decent/Neural_Network/build/CMakeFiles/Neural_Network.dir
+/home/symphony/Documents/Linear-Algebra/Gradient_Decent/Neural_Network/build/CMakeFiles/edit_cache.dir
+/home/symphony/Documents/Linear-Algebra/Gradient_Decent/Neural_Network/build/CMakeFiles/rebuild_cache.dir
