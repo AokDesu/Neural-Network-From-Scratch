@@ -16,6 +16,7 @@ make
 cd ../output
 ./Neural_Network
 ```
+***Note:*** Usually, it takes round 45 minutes to complete.
 
 
 
