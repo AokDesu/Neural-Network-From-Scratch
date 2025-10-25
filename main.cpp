@@ -72,7 +72,7 @@ int main() {
     // 2nd Hidden layer -> Output layer (10 neurons, for digits 0-9)
 
     // --- 4. Train the Network ---
-    std::cout << "Starting training... (This may take a few minutes)\n";
+    std::cout << "Starting training... (This may take around 45 minutes)\n";
     nn.train(train_images, train_labels, 10, 0.01); // Train for 10 epochs
     std::cout << "Training complete." << std::endl;
 
