@@ -11,6 +11,11 @@ git clone <repo-url>
 cd Neural-Network-From-Scratch/build
 make
 ```
+### 3. execute the output file
+```
+cd ../output
+./Neural_Network
+```
 
 
 
