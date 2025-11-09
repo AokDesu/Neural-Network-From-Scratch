@@ -7,16 +7,6 @@
 #include "Layer/Layer.h"
 #include "Network/Network.h"
 
-// A helper function to find the predicted digit from the output matrix
-int get_predicted_digit(const Matrix &prediction) {
-  const auto &data = prediction.getData();
-  // Find the iterator to the element with the maximum value
-  auto max_it = std::max_element(
-      data.begin(), data.end(), [](const std::vector<double> &a, const std::vector<double> &b) { return a[0] < b[0]; });
-  // Return the index of that element
-  return std::distance(data.begin(), max_it);
-}
-
 int main() {
   try {
     // --- 1. Load the MNIST Data ---
@@ -73,24 +63,8 @@ int main() {
 
     // --- 4. Train the Network ---
     std::cout << "Starting training... (This may take around 45 minutes)\n";
-    nn.train(train_images, train_labels, 10, 0.01); // Train for 10 epochs
+    nn.train(train_images, train_labels, 10, 0.001, test_images, test_labels); // Train for 5 epochs
     std::cout << "Training complete." << std::endl;
-
-    // --- 5. Test the Network ---
-    int correct_predictions = 0;
-    for (size_t i = 0; i < test_images.size(); ++i) {
-      Matrix prediction = nn.predict(test_images[i]);
-      int predicted_digit = get_predicted_digit(prediction);
-      int actual_digit = get_predicted_digit(test_labels[i]);
-
-      if (predicted_digit == actual_digit) {
-        correct_predictions++;
-      }
-    }
-
-    double accuracy = static_cast<double>(correct_predictions) / test_images.size() * 100.0;
-    std::cout << "\n--- Network Performance ---" << std::endl;
-    std::cout << "Accuracy on test set: " << accuracy << "%" << std::endl;
 
   } catch (const std::exception &e) {
     std::cerr << "An error occurred: " << e.what() << std::endl;

@@ -23,8 +23,7 @@
  * @param numRows The number of rows for the new matrix.
  * @param numCols The number of columns for the new matrix.
  */
-Matrix::Matrix(unsigned int numRows, unsigned int numCols)
-    : rows(numRows), cols(numCols) {
+Matrix::Matrix(unsigned int numRows, unsigned int numCols) : rows(numRows), cols(numCols) {
   // Resize the outer vector to hold the correct number of rows.
   data.resize(rows);
   // For each row, resize the inner vector to hold the correct number of
@@ -58,8 +57,7 @@ Matrix::Matrix(const std::vector<std::vector<double>> &initial_data) {
  */
 Matrix Matrix::multiply(const Matrix &other) const {
   if (this->rows != other.rows || this->cols != other.cols) {
-    throw std::invalid_argument(
-        "Matrix dimensions must match for element-wise multiplication.");
+    throw std::invalid_argument("Matrix dimensions must match for element-wise multiplication.");
   }
   Matrix result(this->rows, this->cols);
   for (unsigned int i = 0; i < this->rows; ++i) {
@@ -110,8 +108,7 @@ Matrix Matrix::add(const Matrix &other) const {
  */
 Matrix Matrix::subtract(const Matrix &other) const {
   if (this->rows != other.rows || this->cols != other.cols) {
-    throw std::invalid_argument(
-        "Matrix dimensions must match for subtraction.");
+    throw std::invalid_argument("Matrix dimensions must match for subtraction.");
   }
   Matrix result(this->rows, this->cols);
   for (unsigned int i = 0; i < this->rows; ++i) {
@@ -227,8 +224,7 @@ void Matrix::print() const {
  */
 Matrix Matrix::multiply(const Matrix &a, const Matrix &b) {
   if (a.cols != b.rows) {
-    throw std::invalid_argument(
-        "Matrix dimensions are not compatible for multiplication.");
+    throw std::invalid_argument("Matrix dimensions are not compatible for multiplication.");
   }
 
   Matrix c(a.rows, b.cols);

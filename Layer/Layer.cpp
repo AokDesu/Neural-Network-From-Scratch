@@ -20,14 +20,12 @@
  * @param activation The activation function to be used (e.g., Leaky ReLU).
  * @param activationDerivative The derivative of the activation function.
  */
-Layer::Layer(unsigned int inputSize, unsigned int outputSize,
-             std::function<Matrix(const Matrix &)> activation,
+Layer::Layer(unsigned int inputSize, unsigned int outputSize, std::function<Matrix(const Matrix &)> activation,
              std::function<Matrix(const Matrix &)> activationDerivative)
     // Use a member initializer list for efficiency.
     // Initialize matrices with correct dimensions.
-    : weights(outputSize, inputSize), biases(outputSize, 1),
-      lastInput(0, 0), // Initialized as empty
-      lastZ(0, 0)      // Initialized as empty
+    : weights(outputSize, inputSize), biases(outputSize, 1), lastInput(0, 0), // Initialized as empty
+      lastZ(0, 0)                                                             // Initialized as empty
 {
   // Initialize weights and biases with small random values.
   weights.randomize();
@@ -47,8 +45,7 @@ Layer::Layer(unsigned int inputSize, unsigned int outputSize,
  * backward pass for that layer.
  */
 auto getMatrixOfOnes = [](const Matrix &m) {
-  std::vector<std::vector<double>> ones(m.getRows(),
-                                        std::vector<double>(m.getCols(), 1.0));
+  std::vector<std::vector<double>> ones(m.getRows(), std::vector<double>(m.getCols(), 1.0));
   return Matrix(ones);
 };
 
@@ -63,10 +60,8 @@ auto getMatrixOfOnes = [](const Matrix &m) {
  * @param outputSize The number of neurons in this layer.
  * @param activation The activation function to be used (e.g., Softmax).
  */
-Layer::Layer(unsigned int inputSize, unsigned int outputSize,
-             std::function<Matrix(const Matrix &)> activation)
-    : weights(outputSize, inputSize), biases(outputSize, 1), lastInput(0, 0),
-      lastZ(0, 0) {
+Layer::Layer(unsigned int inputSize, unsigned int outputSize, std::function<Matrix(const Matrix &)> activation)
+    : weights(outputSize, inputSize), biases(outputSize, 1), lastInput(0, 0), lastZ(0, 0) {
   weights.randomize();
   biases.randomize();
   this->activation = activation;
@@ -140,9 +135,8 @@ Matrix Layer::backward(const Matrix &outputGradient, double learningRate) {
   Matrix input_gradient = Matrix::multiply(weights_T, z_gradient);
 
   // --- Step 5: Update Parameters (Gradient Descent) ---
-  // Apply the updates using the (now safe) gradients and learning rate.
-  this->weights =
-      this->weights.subtract(weights_gradient.multiply(learningRate));
+  // Apply the updates using the gradients and learning rate.
+  this->weights = this->weights.subtract(weights_gradient.multiply(learningRate));
   this->biases = this->biases.subtract(biases_gradient.multiply(learningRate));
 
   // Return the error signal for the next loop in the backward pass.

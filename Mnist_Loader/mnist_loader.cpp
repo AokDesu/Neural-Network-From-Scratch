@@ -41,14 +41,12 @@ std::vector<Matrix> load_mnist_images(const std::string &path) {
 
   std::vector<Matrix> images;
   for (int i = 0; i < number_of_images; ++i) {
-    std::vector<std::vector<double>> image_data(rows * cols,
-                                                std::vector<double>(1));
+    std::vector<std::vector<double>> image_data(rows * cols, std::vector<double>(1));
     for (int r = 0; r < rows; ++r) {
       for (int c = 0; c < cols; ++c) {
         unsigned char pixel = 0;
         file.read((char *)&pixel, sizeof(pixel));
-        image_data[r * cols + c][0] =
-            (double)pixel / 255.0; // Normalize to 0.0-1.0
+        image_data[r * cols + c][0] = (double)pixel / 255.0; // Normalize to 0.0-1.0
       }
     }
     images.push_back(Matrix(image_data));
@@ -76,8 +74,7 @@ std::vector<Matrix> load_mnist_labels(const std::string &path) {
   for (int i = 0; i < number_of_labels; ++i) {
     unsigned char label = 0;
     file.read((char *)&label, sizeof(label));
-    std::vector<std::vector<double>> label_data(10,
-                                                std::vector<double>(1, 0.0));
+    std::vector<std::vector<double>> label_data(10, std::vector<double>(1, 0.0));
     label_data[label][0] = 1.0; // One-hot encode the label
     labels.push_back(Matrix(label_data));
   }

@@ -7,10 +7,11 @@
  * (for predictions) and the full training loop (forward, backpropagation,
  * and parameter updates).
  */
-
 #include "Network.h"
+#include <algorithm>
 #include <cmath>
 #include <iostream> // For std::cout in the train function
+#include <limits>
 
 /**
  * @brief Adds a new, pre-initialized layer to the network.
@@ -37,6 +38,16 @@ Matrix Network::predict(const Matrix &input) {
   return output;
 }
 
+// A helper function to find the predicted digit from the output matrix
+int Network::get_predicted_digit(const Matrix &prediction) {
+  const auto &data = prediction.getData();
+  // Find the iterator to the element with the maximum value
+  auto max_it = std::max_element(
+      data.begin(), data.end(), [](const std::vector<double> &a, const std::vector<double> &b) { return a[0] < b[0]; });
+  // Return the index of that element
+  return std::distance(data.begin(), max_it);
+}
+
 /**
  * @brief The main training function that runs the learning process.
  *
@@ -49,9 +60,9 @@ Matrix Network::predict(const Matrix &input) {
  * dataset.
  * @param learningRate The step size for gradient descent.
  */
-void Network::train(const std::vector<Matrix> &training_data,
-                    const std::vector<Matrix> &training_labels, int epochs,
-                    double learningRate) {
+void Network::train(const std::vector<Matrix> &training_data, const std::vector<Matrix> &training_labels, int epochs,
+                    double learningRate, std::vector<Matrix> &test_images, std::vector<Matrix> &test_labels) {
+
   // Outer loop: Iterates over the entire dataset multiple times.
   for (int i = 0; i < epochs; ++i) {
     double total_error = 0;
@@ -71,8 +82,7 @@ void Network::train(const std::vector<Matrix> &training_data,
 
       // --- Step 3: Backward Pass (Backpropagation) ---
       // Get the initial error gradient from the loss function.
-      Matrix gradient =
-          Network::cross_entropy_loss_derivative(prediction, label);
+      Matrix gradient = Network::cross_entropy_loss_derivative(prediction, label);
 
       // Pass the gradient backward through all layers, from last to first.
       // Each layer updates its own weights and returns the gradient
@@ -83,8 +93,23 @@ void Network::train(const std::vector<Matrix> &training_data,
     }
 
     // Print the average error for this epoch.
-    std::cout << "Epoch " << i + 1 << "/" << epochs
-              << ", Error: " << total_error / training_data.size() << std::endl;
+    std::cout << "Epoch " << i + 1 << "/" << epochs << ", Error: " << total_error / training_data.size() << std::endl;
+    std::cout << "Cross entropy loss: " << total_error << std::endl;
+    // --- 5. Test the Network ---
+    int correct_predictions = 0;
+    for (size_t i = 0; i < test_images.size(); ++i) {
+      Matrix prediction = this->predict(test_images[i]);
+      int predicted_digit = get_predicted_digit(prediction);
+      int actual_digit = get_predicted_digit(test_labels[i]);
+
+      if (predicted_digit == actual_digit) {
+        correct_predictions++;
+      }
+    }
+
+    double accuracy = static_cast<double>(correct_predictions) / test_images.size() * 100.0;
+    std::cout << "--- Network Performance ---" << std::endl;
+    std::cout << "Accuracy on test set: " << accuracy << "%\n" << std::endl;
   }
 }
 
@@ -100,18 +125,16 @@ void Network::train(const std::vector<Matrix> &training_data,
  * @param label The (N x 1) one-hot encoded correct label.
  * @return The scalar loss value for this example.
  */
-double Network::cross_entropy_loss(const Matrix &prediction,
-                                   const Matrix &label) {
+double Network::cross_entropy_loss(const Matrix &prediction, const Matrix &label) {
   double loss = 0.0;
   // A small constant to prevent log(0), which would be -infinity.
-  const double epsilon = 1e-9;
+  const double epsilon = std::numeric_limits<double>::epsilon();
 
   for (unsigned int i = 0; i < prediction.getRows(); ++i) {
     // The formula is -y * log(p)
     // Since y is one-hot encoded, we only care about the case
     // where label.data[i][0] is 1.0.
-    loss -=
-        label.getData()[i][0] * std::log(prediction.getData()[i][0] + epsilon);
+    loss -= label.getData()[i][0] * std::log(prediction.getData()[i][0] + epsilon);
   }
   return loss;
 }
@@ -127,8 +150,7 @@ double Network::cross_entropy_loss(const Matrix &prediction,
  * @param label The (N x 1) one-hot encoded correct label.
  * @return The initial gradient (p - y) to be passed to the last layer.
  */
-Matrix Network::cross_entropy_loss_derivative(const Matrix &prediction,
-                                              const Matrix &label) {
+Matrix Network::cross_entropy_loss_derivative(const Matrix &prediction, const Matrix &label) {
   // The derivative is simply: prediction - label
   return prediction.subtract(label);
 }
@@ -152,6 +174,5 @@ double Network::mse(const Matrix &prediction, const Matrix &label) {
  * @brief [DEPRECATED] Calculates the derivative of Mean Squared Error.
  */
 Matrix Network::mse_derivative(const Matrix &prediction, const Matrix &label) {
-  return prediction.subtract(label).multiply(
-      2.0 / (label.getRows() * label.getCols()));
+  return prediction.subtract(label).multiply(2.0 / (label.getRows() * label.getCols()));
 }
