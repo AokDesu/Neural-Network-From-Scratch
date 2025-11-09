@@ -63,7 +63,7 @@ int main() {
 
     // --- 4. Train the Network ---
     std::cout << "Starting training... (This may take around 45 minutes)\n";
-    nn.train(train_images, train_labels, 10, 0.001, test_images, test_labels); // Train for 5 epochs
+    nn.train(train_images, train_labels, 10, 0.001, test_images, test_labels); // Train for 10 epochs
     std::cout << "Training complete." << std::endl;
 
   } catch (const std::exception &e) {
