@@ -1,16 +1,34 @@
 # This project is a part from Linear Algebra course
 I made this project because I want to understand how Neural Network actually works under the hood and how it related to linear algebra.
 
+## Requirements
+1. CMAKE
+2. C/C++ Compiler
+3. Build tool
+
 ## How to set up project
 ### 1. clone the repository <br>
 ```
 git clone <repo-url>
 ```
 ### 2. build the source code
+**on linux**
 ```
-cd Neural-Network-From-Scratch/build
+cd Neural-Network-From-Scratch
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
+**on windows**
+```
+cd Neural-Network-From-Scratch
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+mingw32-make
+```
+
 ### 3. execute the output file
 ```
 cd ../output
