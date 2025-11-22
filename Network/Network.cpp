@@ -94,7 +94,6 @@ void Network::train(const std::vector<Matrix> &training_data, const std::vector<
 
     // Print the average error for this epoch.
     std::cout << "Epoch " << i + 1 << "/" << epochs << ", Error: " << total_error / training_data.size() << std::endl;
-    std::cout << "Cross entropy loss: " << total_error << std::endl;
     // --- 5. Test the Network ---
     int correct_predictions = 0;
     for (size_t i = 0; i < test_images.size(); ++i) {
